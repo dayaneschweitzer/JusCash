@@ -1,0 +1,24 @@
+# Node modules
+/node_modules/
+
+# Build output
+/build/
+ /dist/
+
+# Logs
+*.log
+
+# Arquivos de ambiente
+.env
+.env.*.local
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Editor de código
+.vscode/
+.idea/
+
+# Outros
+coverage/

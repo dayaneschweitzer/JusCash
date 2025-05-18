@@ -1,0 +1,124 @@
+/* index.css */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+.navbar-logo img {
+  height: 40px;
+}
+
+.navbar-logout button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Login e Cadastro */
+.login-container,
+.register-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-container input,
+.register-container input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 10px 0;
+  box-sizing: border-box;
+}
+
+.link {
+  color: #007bff;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  margin-bottom: 10px;
+}
+
+/* Kanban Board */
+.kanban-container {
+  padding: 20px;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.kanban-column {
+  background: #f4f4f4;
+  border-radius: 5px;
+  padding: 10px;
+  width: 250px;
+  min-height: 400px;
+}
+
+.publication-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  width: 500px;
+  max-width: 90%;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.modal-header,
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Filtros */
+.search-filter {
+  margin-bottom: 20px;
+}
+
+.date-filters {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}

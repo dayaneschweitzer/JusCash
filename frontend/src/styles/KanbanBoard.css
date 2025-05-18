@@ -1,0 +1,82 @@
+/* KanbanBoard.css */
+.kanban-container {
+  padding: 1rem;
+  background-color: #f8f9fc;
+  min-height: 100vh;
+}
+
+.kanban-filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.date-fields {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+}
+
+input[type="text"],
+input[type="date"] {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  width: 220px;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.kanban-column h3 {
+  color: #072854;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.kanban-column span {
+  font-size: 0.85rem;
+  color: #072854;  
+  font-weight: 500;
+}
+
+.kanban-column {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  transition: box-shadow 0.3s ease;
+}
+
+.kanban-column:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+}
+

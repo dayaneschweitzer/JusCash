@@ -1,0 +1,62 @@
+/* Container principal em linha */
+.search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Estilização dos campos */
+.search-section,
+.date-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Agrupamento das datas */
+.date-section {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+}
+
+.date-section > *:last-child {
+  margin-left: 0.1rem;
+}
+/*calendario */
+.date-section .react-datepicker-wrapper {
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.date-section .react-datepicker__input-container input {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Rótulos */
+.label-title,
+.date-section span {
+  color: #072854;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* Botão */
+.search-button {
+  background-color: #072854;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
