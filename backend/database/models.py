@@ -106,3 +106,21 @@ def atualizar_status_publicacao(pub_id: int, novo_status: str) -> bool:
     atualizado = cursor.rowcount > 0
     conn.close()
     return atualizado
+def registrar_usuario(nome: str, email: str, senha: str) -> Dict[str, str]:
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
+            (nome, email, senha)
+        )
+        conn.commit()
+    except sqlite3.IntegrityError:
+        raise ValueError("E-mail já está registrado")
+    finally:
+        conn.close()
+
+    return {
+        "nome": nome,
+        "email": email
+    }

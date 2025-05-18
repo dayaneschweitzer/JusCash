@@ -1,25 +1,26 @@
 from fastapi import FastAPI, HTTPException, Request, Body, Query
 from fastapi.middleware.cors import CORSMiddleware
-from database.models import listar_publicacoes, atualizar_status_publicacao
+from database.models import listar_publicacoes, atualizar_status_publicacao, registrar_usuario
 from dotenv import load_dotenv
-from pydantic import BaseModel  
+from pydantic import BaseModel
 import os
 
+# Carrega variáveis de ambiente
 load_dotenv()
 
+# ✅ Instância única do app FastAPI
 app = FastAPI()
 
-# CORS para permitir acesso do frontend
+# ✅ Middleware CORS corretamente configurado
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Ajuste para ["http://localhost:3000"] em produção
+    allow_origins=["http://localhost:3000"],  # ou ["*"] durante desenvolvimento
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-from fastapi import Query
-
+# ✅ GET /api/publicacoes
 @app.get("/api/publicacoes")
 def get_publicacoes(
     query: str = Query('', alias="query"),
@@ -28,6 +29,7 @@ def get_publicacoes(
 ):
     return listar_publicacoes(query, fromDate, toDate)
 
+# ✅ PATCH /api/publicacoes/{id}
 class StatusUpdate(BaseModel):
     status: str
 
@@ -38,7 +40,7 @@ def atualizar_status(pub_id: int, status_update: StatusUpdate):
         raise HTTPException(status_code=404, detail="Publicação não encontrada")
     return {"message": "Status atualizado com sucesso"}
 
-
+# ✅ POST /api/login
 @app.post("/api/login")
 async def login(request: Request):
     data = await request.json()
@@ -58,3 +60,23 @@ async def login(request: Request):
         }
     else:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
+
+# ✅ POST /api/register
+@app.post("/api/register")
+async def register(request: Request):
+    data = await request.json()
+    nome = data.get("name")
+    email = data.get("email")
+    senha = data.get("password")
+
+    if not nome or not email or not senha:
+        raise HTTPException(status_code=400, detail="Dados incompletos")
+
+    try:
+        user = registrar_usuario(nome, email, senha)
+        return {
+            "message": "Usuário registrado com sucesso",
+            "user": user
+        }
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
