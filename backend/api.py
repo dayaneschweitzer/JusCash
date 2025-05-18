@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Request, Body, Query
 from fastapi.middleware.cors import CORSMiddleware
 from database.models import listar_publicacoes, atualizar_status_publicacao
 from dotenv import load_dotenv
-from pydantic import BaseModel
+from pydantic import BaseModel  
 import os
 
 load_dotenv()
