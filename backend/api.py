@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request, Body, Query
 from fastapi.middleware.cors import CORSMiddleware
 from database.models import listar_publicacoes, atualizar_status_publicacao
 from dotenv import load_dotenv
+from pydantic import BaseModel
 import os
 
 load_dotenv()
@@ -27,12 +28,16 @@ def get_publicacoes(
 ):
     return listar_publicacoes(query, fromDate, toDate)
 
+class StatusUpdate(BaseModel):
+    status: str
+
 @app.patch("/api/publicacoes/{pub_id}")
-def atualizar_status(pub_id: int, status: str = Body(...)):
-    atualizado = atualizar_status_publicacao(pub_id, status)
+def atualizar_status(pub_id: int, status_update: StatusUpdate):
+    atualizado = atualizar_status_publicacao(pub_id, status_update.status)
     if not atualizado:
         raise HTTPException(status_code=404, detail="Publicação não encontrada")
     return {"message": "Status atualizado com sucesso"}
+
 
 @app.post("/api/login")
 async def login(request: Request):

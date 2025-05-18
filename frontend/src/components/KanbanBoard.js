@@ -99,12 +99,16 @@ const KanbanBoard = ({ user, onLogout }) => {
       [destColId]: { ...columns[destColId], items: destItems },
     });
 
-    await axios.patch(`http://127.0.0.1:8000/api/publicacoes/${movedItem.id}`, {
-      status: movedItem.status,
-    });
+        await axios.patch(
+      `http://127.0.0.1:8000/api/publicacoes/${movedItem.id}`,
+      { status: movedItem.status },
+      { headers: { 'Content-Type': 'application/json' } }
+    );
   };
 
   return (
+
+
     <div className="kanban-container">
       <Navbar onLogout={onLogout} />
       <div className="search-container">
