@@ -58,7 +58,6 @@ input[type="date"] {
   align-items: center;
 }
 
-
 .kanban-column span {
   font-size: 0.85rem;
   color: #072854;  
@@ -79,4 +78,9 @@ input[type="date"] {
 .kanban-column:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
 }
+
+.search-container {
+  padding: 0 24px;
+}
+
 

@@ -1,10 +1,5 @@
 import sqlite3
-from typing import List, Dict, Any
-
-DB_NAME = 'publicacoes.db'
-
-# database/models.py
-import sqlite3
+from typing import List, Dict
 
 DB_NAME = 'database/publicacoes.db'
 
@@ -35,64 +30,73 @@ def salvar_publicacao(pub: Dict[str, str]) -> None:
     cursor.execute('''
         INSERT INTO publicacoes (
             numero_processo,
-            data_disponibilizacao,
             autores,
+            reu,
             advogados,
-            conteudo,
             valor_bruto,
             valor_juros,
-            honorarios
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            honorarios,
+            conteudo,
+            status,
+            data_publicacao
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         pub['numero_processo'],
-        pub['data_disponibilizacao'],
         pub['autores'],
+        pub.get('reu', 'Instituto Nacional do Seguro Social - INSS'),
         pub['advogados'],
-        pub['conteudo'],
         pub['valor_bruto'],
         pub['valor_juros'],
-        pub['honorarios']
+        pub['honorarios'],
+        pub['conteudo'],
+        pub.get('status', 'novas'),
+        pub['data_publicacao']
     ))
     conn.commit()
     conn.close()
 
-import sqlite3
-
-def listar_publicacoes(query="", fromDate="", toDate=""):
-    conn = sqlite3.connect("database/publicacoes.db")
+def listar_publicacoes(query: str = '', fromDate: str = '', toDate: str = '') -> List[Dict]:
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
     sql = "SELECT * FROM publicacoes WHERE 1=1"
     params = []
 
     if query:
-        sql += " AND numero LIKE ?"
+        sql += " AND numero_processo LIKE ?"
         params.append(f"%{query}%")
 
     if fromDate:
-        sql += " AND data >= ?"
+        sql += " AND data_publicacao >= ?"
         params.append(fromDate)
 
     if toDate:
-        sql += " AND data <= ?"
+        sql += " AND data_publicacao <= ?"
         params.append(toDate)
 
     cursor.execute(sql, params)
     rows = cursor.fetchall()
     conn.close()
-    return [
-        {
+
+    publicacoes = []
+    for row in rows:
+        publicacoes.append({
             "id": row[0],
-            "numero": row[1],
-            "status": row[2],
-            "data": row[3],
-            "descricao": row[4],
-        }
-        for row in rows
-    ]
+            "numero_processo": row[1],
+            "autores": row[2],
+            "reu": row[3],
+            "advogados": row[4],
+            "valor_bruto": row[5],
+            "valor_juros": row[6],
+            "honorarios": row[7],
+            "conteudo": row[8],
+            "status": row[9],
+            "data_publicacao": row[10]
+        })
+
+    return publicacoes
 
 def atualizar_status_publicacao(pub_id: int, novo_status: str) -> bool:
-   
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute('''

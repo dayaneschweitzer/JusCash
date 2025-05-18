@@ -25,7 +25,9 @@ const KanbanBoard = ({ user, onLogout }) => {
 
   const fetchPublications = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/publicacoes', { params: filters });
+      const response = await axios.get('http://127.0.0.1:8000/api/publicacoes', {
+        params: filters,
+      });
       const publications = response.data;
 
       const newColumns = {
@@ -36,7 +38,26 @@ const KanbanBoard = ({ user, onLogout }) => {
       };
 
       publications.forEach((pub) => {
-        newColumns[pub.status || 'novas'].items.push(pub);
+        const statusKey = pub.status === 'nova' ? 'novas' : pub.status;
+
+        const normalizedPub = {
+          id: pub.id,
+          processNumber: pub.numero_processo,
+          publicationDate: pub.data_publicacao,
+          updatedAt: pub.updated_at || pub.data_publicacao, // se existir campo
+          authors: pub.autores,
+          lawyers: pub.advogados,
+          principalValue: pub.valor_bruto,
+          moraValue: pub.valor_juros,
+          fees: pub.honorarios,
+          content: pub.conteudo,
+          status: statusKey,
+        };
+
+
+        if (newColumns[statusKey]) {
+          newColumns[statusKey].items.push(normalizedPub);
+        }
       });
 
       setColumns(newColumns);
@@ -78,13 +99,18 @@ const KanbanBoard = ({ user, onLogout }) => {
       [destColId]: { ...columns[destColId], items: destItems },
     });
 
-    await axios.patch(`http://127.0.0.1:8000/api/publicacoes/${movedItem.id}`, { status: movedItem.status });
+    await axios.patch(`http://127.0.0.1:8000/api/publicacoes/${movedItem.id}`, {
+      status: movedItem.status,
+    });
   };
 
   return (
     <div className="kanban-container">
       <Navbar onLogout={onLogout} />
-      <SearchFilter filters={filters} setFilters={setFilters} />
+      <div className="search-container">
+        <SearchFilter filters={filters} setFilters={setFilters} />
+      </div>
+
 
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="kanban-board">
@@ -93,15 +119,19 @@ const KanbanBoard = ({ user, onLogout }) => {
               {(provided) => (
                 <div className="kanban-column" ref={provided.innerRef} {...provided.droppableProps}>
                   <h3>{colData.title} <span>{colData.items.length}</span></h3>
-                  {colData.items.map((item, index) => (
-                    <Draggable draggableId={item.id.toString()} index={index} key={item.id}>
-                      {(provided) => (
-                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                          <PublicationCard publication={item} onClick={() => setSelectedPublication(item)} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  {colData.items.length === 0 ? (
+                    <p>Sem publicações</p>
+                  ) : (
+                    colData.items.map((item, index) => (
+                      <Draggable draggableId={item.id.toString()} index={index} key={item.id}>
+                        {(provided) => (
+                          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                            <PublicationCard publication={item} onClick={() => setSelectedPublication(item)} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))
+                  )}
                   {provided.placeholder}
                 </div>
               )}
@@ -111,7 +141,10 @@ const KanbanBoard = ({ user, onLogout }) => {
       </DragDropContext>
 
       {selectedPublication && (
-        <PublicationModal publication={selectedPublication} onClose={() => setSelectedPublication(null)} />
+        <PublicationModal
+          publication={selectedPublication}
+          onClose={() => setSelectedPublication(null)}
+        />
       )}
     </div>
   );

@@ -17,13 +17,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi import Query
+
 @app.get("/api/publicacoes")
 def get_publicacoes(
-    query: str = "",
-    fromDate: str = "",
-    toDate: str = ""
+    query: str = Query('', alias="query"),
+    fromDate: str = Query('', alias="fromDate"),
+    toDate: str = Query('', alias="toDate")
 ):
-    return listar_publicacoes(query=query, fromDate=fromDate, toDate=toDate)
+    return listar_publicacoes(query, fromDate, toDate)
 
 @app.patch("/api/publicacoes/{pub_id}")
 def atualizar_status(pub_id: int, status: str = Body(...)):

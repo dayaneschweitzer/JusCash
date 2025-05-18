@@ -1,24 +1,47 @@
 import React from 'react';
+import { FaClock, FaCalendarAlt } from 'react-icons/fa';
 import '../styles/PublicationCard.css';
 
-const statusColors = {
-  novas: '#e74c3c',        // vermelho
-  lidas: '#2ecc71',        // verde
-  enviados: '#f1c40f',     // amarelo
-  concluidas: '#bdc3c7'    // cinza
+const statusColor = {
+  novas: '#dc3545',
+  lidas: '#28a745',
+  enviados: '#ffc107',
+  concluidas: '#6c757d'
+};
+
+const formatarData = (dataStr) => {
+  if (!dataStr) return '';
+  const [ano, mes, dia] = dataStr.split('-');
+  return `${dia}/${mes}/${ano}`;
+};
+
+const calcularTempo = (dataStr) => {
+  const data = new Date(dataStr);
+  const agora = new Date();
+  const diffMs = agora - data;
+  const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+  return `${diffHoras}h`;
 };
 
 const PublicationCard = ({ publication, onClick }) => {
-  const dotColor = statusColors[publication.status] || '#ccc';
-
   return (
     <div className="publication-card" onClick={onClick}>
-      <span className="status-dot" style={{ backgroundColor: dotColor }}></span>
-      <div><strong>{publication.processNumber}</strong></div>
-      <div>Data: {publication.publicationDate}</div>
-      <div>Última atualização: {publication.lastUpdate || publication.publicationDate}</div>
+      <div className="status-dot" style={{ backgroundColor: statusColor[publication.status] }} />
+
+      <div className="processo">{publication.processNumber}</div>
+
+      <div className="card-info">
+        <FaClock className="icon" />
+        <span>{calcularTempo(publication.publicationDate)}</span>
+      </div>
+
+      <div className="card-info">
+        <FaCalendarAlt className="icon" />
+        <span>{formatarData(publication.publicationDate)}</span>
+      </div>
     </div>
   );
 };
 
 export default PublicationCard;
+

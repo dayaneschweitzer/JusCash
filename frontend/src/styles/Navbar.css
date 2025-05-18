@@ -1,54 +1,43 @@
 .navbar-modern {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 12px 24px;
+  align-items: flex-start;
+  padding: 0 24px 12px 24px; /* <-- mesmo left/right da seção de busca */
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+
+.navbar-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 12px; /* dá um leve espaçamento da borda superior */
+}
+
+.navbar-logo {
+  height: 28px;
+  padding-bottom: 8px;
+  margin-left: 0; /* garante alinhamento */
+  position: relative;
+}
+
 .navbar-title-with-icon {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 1rem;
-}
-.navbar-left {
-  display: flex;
-  flex-direction: column;  
-  align-items: flex-start; 
-}
-
-.navbar-logo {
-  height: 80px;
-  margin-bottom: 15px; 
+  padding-left: 0; /* remove espaçamento à esquerda */
+  margin-left: 0;
 }
 
 .navbar-icon {
-  width: 40px;
-  height: 40%;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
 }
 
-
 .navbar-title {
-  font-size: 20px;
-  font-weight: 600;
-  color:#072854;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #072854;
   margin: 0;
-}
-
-.logout-button {
-  background-color: transparent;
-  border: none;
-  color: #374151;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.logout-button:hover {
-  color: #ef4444; /* vermelho leve ao passar o mouse */
 }
