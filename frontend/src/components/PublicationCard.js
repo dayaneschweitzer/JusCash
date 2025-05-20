@@ -11,16 +11,23 @@ const statusColor = {
 
 const formatarData = (dataStr) => {
   if (!dataStr) return '';
-  const [ano, mes, dia] = dataStr.split('-');
+  const [dia, mes, ano] = dataStr.split('/');
   return `${dia}/${mes}/${ano}`;
 };
 
 const calcularTempo = (dataStr) => {
-  const data = new Date(dataStr);
+  if (!dataStr) return '';
+  const [dia, mes, ano] = dataStr.split('/');
+  const data = new Date(`${ano}-${mes}-${dia}`);
   const agora = new Date();
   const diffMs = agora - data;
   const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
-  return `${diffHoras}h`;
+
+  if (diffHoras < 1) return "menos de 1h atrás";
+  if (diffHoras < 24) return `há ${diffHoras}h`;
+
+  const diffDias = Math.floor(diffHoras / 24);
+  return `há ${diffDias} dia${diffDias !== 1 ? 's' : ''}`;
 };
 
 const PublicationCard = ({ publication, onClick }) => {
