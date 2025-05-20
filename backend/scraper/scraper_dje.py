@@ -46,10 +46,10 @@ def salvar_publicacao(data):
     conn.close()
 
 def extrair_dados_da_publicacao(html_element, data_publicacao):
-    texto = html_element.text
+    texto = html_element.text  
 
     numero_processo = ""
-    match_proc = re.search(r"\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}", texto.replace('\n', ' '))
+    match_proc = re.search(r"\d{7}-\d{2}\.\d{4}\.\d{1,2}\.\d{2}\.\d{4}|\d{7}-\d{2}\.\d{4}", texto)
     if match_proc:
         numero_processo = match_proc.group().strip()
 
