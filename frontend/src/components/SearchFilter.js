@@ -3,6 +3,16 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { FiSearch } from 'react-icons/fi';
 import '../styles/SearchFilter.css';
+import axios from 'axios';
+
+const formatDate = (date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  const month = '' + (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = '' + d.getDate().toString().padStart(2, '0');
+  const year = d.getFullYear();
+  return [year, month, day].join('-'); // formato yyyy-MM-dd
+};
 
 const SearchFilter = ({ filters, setFilters }) => {
   const [query, setQuery] = useState(filters.query);
@@ -15,6 +25,25 @@ const SearchFilter = ({ filters, setFilters }) => {
     }, 500);
     return () => clearTimeout(timeoutId);
   }, [query, fromDate, toDate, setFilters]);
+
+  const handleBuscarClick = async () => {
+    if (!fromDate || !toDate) {
+      alert("Selecione as datas para buscar publicações no DJE");
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/scraper-dje', {
+        from_date: formatDate(fromDate),
+        to_date: formatDate(toDate)
+      });
+      console.log("Scraper executado:", response.data);
+      setFilters({ query, fromDate, toDate });
+    } catch (error) {
+      console.error("Erro ao executar scraper:", error);
+      alert("Erro ao buscar publicações no DJE.");
+    }
+  };
 
   return (
     <div className="search-filter">
@@ -51,7 +80,7 @@ const SearchFilter = ({ filters, setFilters }) => {
               locale="pt-BR"
             />
           </div>
-          <button className="search-button" onClick={() => setFilters({ query, fromDate, toDate })}>
+          <button className="search-button" onClick={handleBuscarClick}>
             <FiSearch />
           </button>
         </div>

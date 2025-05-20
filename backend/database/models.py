@@ -1,7 +1,10 @@
 import sqlite3
 from typing import List, Dict
+from datetime import datetime
+import os
 
-DB_NAME = 'database/publicacoes.db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, '../database/publicacoes.db')
 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
@@ -17,7 +20,7 @@ def init_db():
             valor_juros TEXT,
             honorarios TEXT,
             conteudo TEXT,
-            status TEXT DEFAULT 'novas',
+            status TEXT DEFAULT 'nova',
             data_publicacao TEXT
         )
     ''')
@@ -49,7 +52,7 @@ def salvar_publicacao(pub: Dict[str, str]) -> None:
         pub['valor_juros'],
         pub['honorarios'],
         pub['conteudo'],
-        pub.get('status', 'novas'),
+        pub.get('status', 'nova'),
         pub['data_publicacao']
     ))
     conn.commit()
@@ -67,12 +70,20 @@ def listar_publicacoes(query: str = '', fromDate: str = '', toDate: str = '') ->
         params.append(f"%{query}%")
 
     if fromDate:
-        sql += " AND data_publicacao >= ?"
-        params.append(fromDate)
+        try:
+            fromDate = datetime.fromisoformat(fromDate.replace("Z", "")).strftime("%d/%m/%Y")
+            sql += " AND data_publicacao >= ?"
+            params.append(fromDate)
+        except Exception as e:
+            print("Erro ao converter fromDate:", e)
 
     if toDate:
-        sql += " AND data_publicacao <= ?"
-        params.append(toDate)
+        try:
+            toDate = datetime.fromisoformat(toDate.replace("Z", "")).strftime("%d/%m/%Y")
+            sql += " AND data_publicacao <= ?"
+            params.append(toDate)
+        except Exception as e:
+            print("Erro ao converter toDate:", e)
 
     cursor.execute(sql, params)
     rows = cursor.fetchall()
@@ -96,6 +107,50 @@ def listar_publicacoes(query: str = '', fromDate: str = '', toDate: str = '') ->
 
     return publicacoes
 
+def listar_publicacoes_novas(fromDate: str = '', toDate: str = '') -> List[Dict]:
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    sql = "SELECT * FROM publicacoes WHERE status = 'nova'"
+    params = []
+
+    if fromDate:
+        try:
+            fromDate = datetime.fromisoformat(fromDate.replace("Z", "")).strftime("%d/%m/%Y")
+            sql += " AND data_publicacao >= ?"
+            params.append(fromDate)
+        except Exception as e:
+            print("Erro ao converter fromDate:", e)
+
+    if toDate:
+        try:
+            toDate = datetime.fromisoformat(toDate.replace("Z", "")).strftime("%d/%m/%Y")
+            sql += " AND data_publicacao <= ?"
+            params.append(toDate)
+        except Exception as e:
+            print("Erro ao converter toDate:", e)
+
+    cursor.execute(sql, params)
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {
+            "id": row[0],
+            "numero_processo": row[1],
+            "autores": row[2],
+            "reu": row[3],
+            "advogados": row[4],
+            "valor_bruto": row[5],
+            "valor_juros": row[6],
+            "honorarios": row[7],
+            "conteudo": row[8],
+            "status": row[9],
+            "data_publicacao": row[10]
+        }
+        for row in rows
+    ]
+
 def atualizar_status_publicacao(pub_id: int, novo_status: str) -> bool:
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -106,6 +161,7 @@ def atualizar_status_publicacao(pub_id: int, novo_status: str) -> bool:
     atualizado = cursor.rowcount > 0
     conn.close()
     return atualizado
+
 def registrar_usuario(nome: str, email: str, senha: str) -> Dict[str, str]:
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
